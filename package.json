@@ -1,0 +1,31 @@
+{
+  "name": "social-media",
+  "version": "1.0.0",
+  "description": "social media app",
+  "main": "server.js",
+  "scripts": {
+    "watch:ts": "tsc --w",
+    "serve": "nodemon backend/lib/server",
+    "client": "npm start --prefix client",
+    "start:server": "concurrently \"npm run watch:ts\" \"npm run serve\"",
+    "dev": "concurrently \"npm run watch:ts\" \"npm run serve\" \"npm run client\""
+  },
+  "author": "olumorin samuel",
+  "license": "MIT",
+  "dependencies": {
+    "@types/colors": "^1.2.1",
+    "@types/morgan": "^1.9.2",
+    "colors": "^1.4.0",
+    "concurrently": "^6.2.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "http-errors": "^1.7.2",
+    "mongoose": "^5.12.14",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.12",
+    "@types/http-errors": "^1.8.0"
+  }
+}
