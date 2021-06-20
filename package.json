@@ -5,10 +5,13 @@
   "main": "server.js",
   "scripts": {
     "watch:ts": "tsc --w",
+    "compile": "tsc",
     "start": "node backend/lib/server",
     "client": "npm start --prefix frontend",
     "start:server": "concurrently \"npm run watch:ts\" \"npm run start\"",
-    "dev": "concurrently \"npm run watch:ts\" \"npm run serve\" \"npm run frontend\""
+    "dev": "concurrently \"npm run watch:ts\" \"npm run serve\" \"npm run frontend\"",
+    "heroku-postbuild": "npm run compile"
+
   },
   "author": "olumorin samuel",
   "license": "MIT",
