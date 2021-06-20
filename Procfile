@@ -1,1 +1,1 @@
-web: node backend/lib/server
+web: node backend/lib/server.js
