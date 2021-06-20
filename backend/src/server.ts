@@ -12,8 +12,10 @@ process.on('unhandledRejection', (err: HttpError) => {
   console.log(err.name, err.message, err);
 });
 
-const server = app.listen(5000, () => {
-  console.log('server running on port 5000');
+const port = (process.env.PORT as number | undefined) || 5000;
+
+const server = app.listen(port, () => {
+  console.log(`server running on port 5000 http://127.0.0.1:${port}`);
 });
 
 process.on('uncaughtException', (err: HttpError) => {

@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import logger from 'morgan';
 import AppError from './utils/AppError';
 import globalErrorHandler from './controllers/errorController';
+import indexRouter from './routes/index';
 
 const app = express();
 
@@ -11,8 +12,10 @@ app.use(express.json());
 app.use(logger('dev'));
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json({ message: 'Hello social media!!' });
+  res.redirect('/api/social/v1');
 });
+
+app.use('/api/social/v1', indexRouter);
 
 // handles all request url that do not exits on the server
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

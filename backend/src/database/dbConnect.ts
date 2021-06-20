@@ -9,16 +9,18 @@ export const connectDB = async () => {
     useUnifiedTopology: true,
   };
 
+  const uri =
+    process.env.NODE_ENV === 'development'
+      ? process.env.DB_DEV as string
+      : process.env.DB_URI as string;
+
   try {
-    await mongoose.connect(process.env.DB_URI as string, mongooseOptions);
-    console.log(colors.bold.bgRed('🌿 Database connected to database 🤝'));
+    await mongoose.connect(uri, mongooseOptions);
+    console.log(colors.bold.bgRed('🌿 app connected to database 🤝'));
   } catch (e) {
-    console.log(process.env.DB_URI as string);
     console.log(e);
     console.log(
-      colors.bold.bgRed(
-        `oops! 🚫 an error occurred, couldn't connect to DB 😭`
-      )
+      colors.bold.bgRed(`oops! 🚫 an error occurred, couldn't connect to DB 😭`)
     );
   }
 };
