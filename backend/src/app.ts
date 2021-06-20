@@ -3,8 +3,24 @@ import logger from 'morgan';
 import AppError from './utils/AppError';
 import globalErrorHandler from './controllers/errorController';
 import indexRouter from './routes/index';
+import session from 'express-session';
+import passport from 'passport';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
+
+app.use(
+  session({
+    secret: process.env.PASSPORT_SECRET as string,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // global middleware
 app.use(express.json());

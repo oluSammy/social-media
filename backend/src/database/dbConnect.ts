@@ -9,10 +9,7 @@ export const connectDB = async () => {
     useUnifiedTopology: true,
   };
 
-  const uri =
-    process.env.NODE_ENV === 'development'
-      ? process.env.DB_DEV as string
-      : process.env.DB_URI as string;
+  const uri = process.env.DB_URI as string;
 
   try {
     await mongoose.connect(uri, mongooseOptions);
