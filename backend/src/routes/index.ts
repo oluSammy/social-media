@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use('/users', usersRouter);
 
-router.get('/', protectRoute, (_req: Request, res: Response) => {
+router.get('/', (_req: Request, res: Response) => {
   res.send('social app is live');
 });
 
