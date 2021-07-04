@@ -69,7 +69,7 @@ export const signUp = catchAuthAsync(
       return next(new AppError(`${error.message}`, 400));
     }
 
-    const { firstName, lastName, email, password, passwordConfirm } = req.body;
+    const { firstName, lastName, email, password, passwordConfirm, username } = req.body;
 
     const user = await User.create({
       firstName,
@@ -77,6 +77,7 @@ export const signUp = catchAuthAsync(
       email,
       password,
       passwordConfirm,
+      username
     });
 
     sendToken(res, 201, user);
@@ -92,15 +93,31 @@ export const login = catchAuthAsync(
       return next(new AppError(`${error.message}`, 400));
     }
 
-    const { email, password } = req.body;
+    const { email, password, username } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
-
-    if (!user || !(await validatePassword(password, user.password))) {
-      return next(new AppError(`invalid login credentials`, 400));
+    if (!email && !username) {
+      return new AppError('please specify email or username', 400);
     }
 
-    sendToken(res, 200, user);
+    // user logs in with email
+    if (email) {
+      const user = await User.findOne({ email }).select('+password');
+
+      if (!user || !(await validatePassword(password, user.password))) {
+        return next(new AppError(`invalid login credentials`, 400));
+      }
+
+      sendToken(res, 200, user);
+    }
+
+    // user logs in with username
+    const user = await User.findOne({ username }).select('+password');
+
+      if (!user || !(await validatePassword(password, user.password))) {
+        return next(new AppError(`invalid login credentials`, 400));
+      }
+
+      sendToken(res, 200, user);
   }
 );
 

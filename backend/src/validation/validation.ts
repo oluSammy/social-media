@@ -16,6 +16,13 @@ export const validateSignUp = (obj: Record<string, any>) => {
       .error(() => new Error('min character is 1'))
       .required()
       .error(() => new Error('first name is required')),
+    username: Joi.string()
+      .max(30)
+      .error(() => new Error('max character is 30'))
+      .min(1)
+      .error(() => new Error('min character is 1'))
+      .required()
+      .error(() => new Error('first name is required')),
     email: Joi.string()
       .email()
       .error(() => new Error('Email is invalid'))
@@ -40,9 +47,9 @@ export const validateLogin = (obj: Record<string, any>) => {
     email: Joi.string()
       .email()
       .error(() => new Error('Email is invalid'))
-      .required()
       .error(() => new Error('email is required')),
-    password: Joi.string()
+      username: Joi.string(),
+      password: Joi.string()
       .min(6)
       .error(() => new Error('min character is 6'))
       .required()
