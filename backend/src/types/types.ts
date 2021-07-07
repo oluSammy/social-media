@@ -9,4 +9,5 @@ export interface IUser {
   passwordResetToken?: string;
   passwordResetTokenExpires?: Date;
   bio?: string;
+  user: any;
 }
