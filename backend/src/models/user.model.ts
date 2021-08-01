@@ -1,35 +1,35 @@
-import mongoose from 'mongoose';
-import { IUser } from '../types/types';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import { IUser } from "../types/types";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema<IUser>(
   {
     firstName: {
       type: String,
-      required: [true, 'first name is required'],
+      required: [true, "first name is required"],
     },
     lastName: {
       type: String,
-      required: [true, 'first name is required'],
+      required: [true, "first name is required"],
     },
     username: {
       type: String,
       unique: true,
-      required: [true, 'username is required'],
+      required: [true, "username is required"],
     },
     email: {
       type: String,
-      required: [true, 'email is required'],
-      unique: [true, 'a user with this email already exits'],
+      required: [true, "email is required"],
+      unique: [true, "a user with this email already exits"],
     },
     password: {
       type: String,
-      required: [true, 'password is required'],
+      required: [true, "password is required"],
       select: false,
     },
     passwordConfirm: {
       type: String,
-      required: [true, 'pls confirm your password'],
+      required: [true, "pls confirm your password"],
     },
     active: {
       type: Boolean,
@@ -53,6 +53,8 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     photo: String,
+    noOfFollowers: Number,
+    noOfFollowing: Number,
   },
   {
     timestamps: true,
@@ -60,7 +62,7 @@ const userSchema = new mongoose.Schema<IUser>(
 );
 
 //pre save middleware to hash password
-userSchema.pre('save', async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
@@ -71,6 +73,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
