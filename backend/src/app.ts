@@ -40,6 +40,7 @@ app.use("/api/social/v1", indexRouter);
 
 // handles all request url that do not exits on the server
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
+
   next(new AppError(`can't find ${req.url} on this server`, 404));
 });
 

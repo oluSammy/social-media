@@ -10,4 +10,13 @@ export interface IUser {
   passwordResetTokenExpires?: Date;
   bio?: string;
   user: any;
+  photo?: string;
+  noOfFollowers: number;
+  noOfFollowing: number;
+  username: string;
+}
+
+export interface IFollow {
+  userId: string;
+  follows: string[];
 }
