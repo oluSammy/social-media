@@ -11,12 +11,23 @@ export interface IUser {
   bio?: string;
   user: any;
   photo?: string;
-  noOfFollowers: number;
-  noOfFollowing: number;
+  followers: string;
+  followings: string;
   username: string;
+  profilePic: string;
+  coverPhoto: string;
+  profilePicCloudinaryId: string;
+  coverPhotoCloudinaryId: string;
 }
 
 export interface IFollow {
   userId: string;
   follows: string[];
+}
+
+export interface IPost {
+  _id: string;
+  createdBy: string | IUser;
+  photos: { cloudId: string; url: string }[];
+  text: string;
 }
