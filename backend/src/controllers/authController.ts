@@ -13,6 +13,8 @@ import { IUser } from "../types/types";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendEmail } from "../utils/email";
+import Follower from "../models/follower.model";
+import Following from "../models/following.model";
 
 const generateToken = (id: string): string => {
   const token = jwt.sign({ id }, process.env.JWT_SECRET as string, {
@@ -72,7 +74,7 @@ export const signUp = catchAsync(
     const { firstName, lastName, email, password, passwordConfirm, username } =
       req.body;
 
-    const user = await User.create({
+    const user: IUser = await User.create({
       firstName,
       lastName,
       email,
@@ -81,7 +83,27 @@ export const signUp = catchAsync(
       username,
     });
 
-    sendToken(res, 201, user);
+    const following = await Following.create({
+      userId: user._id,
+    });
+
+    const followers = await Follower.create({
+      userId: user._id,
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        followings: following._id,
+        followers: followers._id,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    sendToken(res, 201, updatedUser);
   }
 );
 

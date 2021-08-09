@@ -53,8 +53,18 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     photo: String,
-    noOfFollowers: Number,
-    noOfFollowing: Number,
+    followers: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Follower",
+    },
+    followings: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Following",
+    },
+    profilePic: String,
+    coverPhoto: String,
+    profilePicCloudinaryId: String,
+    coverPhotoCloudinaryId: String,
   },
   {
     timestamps: true,
@@ -69,6 +79,18 @@ userSchema.pre("save", async function (next) {
 
   // delete passwordConfirm field
   this.passwordConfirm = undefined;
+
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "followers",
+    select: "numberOfFollowers -_id",
+  }).populate({
+    path: "followings",
+    select: "numberOfFollowings -_id",
+  });
 
   next();
 });

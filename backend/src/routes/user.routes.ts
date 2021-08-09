@@ -1,5 +1,6 @@
+import { uploadUserPic } from "./../controllers/fileUpload";
 import { followUser } from "./../controllers/user.controller";
-import { NextFunction, Request, Response } from "express";
+
 import express from "express";
 import {
   signUp,
@@ -9,6 +10,7 @@ import {
   forgotPassword,
   resetPassword,
 } from "../controllers/authController";
+import { updateMe } from "../controllers/user.controller";
 
 const router = express.Router();
 
@@ -19,5 +21,7 @@ router.post("/forgotPassword", forgotPassword);
 router.post("/resetPassword/:token", resetPassword);
 
 router.post("/follow/:id", protectRoute, followUser);
+
+router.patch("/updateMe", protectRoute, uploadUserPic, updateMe);
 
 export default router;
