@@ -33,6 +33,8 @@ export const createPost = catchAsync(
       ...req.body,
     };
 
+    console.log(req.photos, "REQQQQ");
+
     if (req.photos) {
       post.photos = req.photos;
     }

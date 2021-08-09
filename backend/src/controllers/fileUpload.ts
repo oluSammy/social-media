@@ -9,6 +9,12 @@ import cloudinary from "cloudinary";
 
 const multerStorage = multer.diskStorage({});
 
+cloudinary.v2.config({
+  cloud_name: "olumorinsamuel",
+  api_key: process.env.CLOUDINARY_API_KEY as string,
+  api_secret: process.env.CLOUDINARY_API_SECRET as string,
+});
+
 const multerFilter = (req: Request, file: Express.Multer.File, cb: any) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
@@ -30,11 +36,5 @@ export const uploadUserPic = upload.fields([
 export const uploadPostPictures = upload.fields([
   { name: "photos", maxCount: 2 },
 ]);
-
-cloudinary.v2.config({
-  cloud_name: "olumorinsamuel",
-  api_key: process.env.CLOUDINARY_API_KEY as string,
-  api_secret: process.env.CLOUDINARY_API_SECRET as string,
-});
 
 export default cloudinary;
