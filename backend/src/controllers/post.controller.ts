@@ -5,6 +5,7 @@ import { catchAsync } from "./../utils/catchAsync";
 import cloudinary from "cloudinary";
 import { deleteOne, getOne } from "./factoryFunctions";
 import AppError from "../utils/AppError";
+import Likes from "../models/Likes.model";
 
 interface MulterRequest extends Request {
   files?: any;
@@ -76,6 +77,16 @@ export const deletePostPicture = catchAsync(
   }
 );
 
+// TODO
+export const deleteLikesAndComments = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await Likes.deleteMany({ postId: req.params.id });
+
+    next();
+  }
+);
+
 export const deletePost = (req: Request, res: Response, next: NextFunction) => {
+  // delete likes and comments
   deleteOne(req, res, next, Post);
 };

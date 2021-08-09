@@ -30,4 +30,18 @@ export interface IPost {
   createdBy: IUser;
   photos: { cloudId: string; url: string }[];
   text: string;
+  numberOfLikes: number;
+}
+
+export interface ILikes {
+  _id: string;
+  postId: string;
+  likedBy: string;
+}
+
+export interface IComment {
+  _id: string;
+  text: string;
+  postId: string;
+  createdBy: IUser;
 }
