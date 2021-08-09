@@ -27,7 +27,7 @@ export interface IFollow {
 
 export interface IPost {
   _id: string;
-  createdBy: string | IUser;
+  createdBy: IUser;
   photos: { cloudId: string; url: string }[];
   text: string;
 }

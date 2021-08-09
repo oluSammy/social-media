@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import Post from "../models/post.model";
 import { catchAsync } from "./../utils/catchAsync";
 import cloudinary from "cloudinary";
+import { deleteOne, getOne } from "./factoryFunctions";
+import AppError from "../utils/AppError";
 
 interface MulterRequest extends Request {
   files?: any;
@@ -33,8 +35,6 @@ export const createPost = catchAsync(
       ...req.body,
     };
 
-    console.log(req.photos, "REQQQQ");
-
     if (req.photos) {
       post.photos = req.photos;
     }
@@ -47,15 +47,35 @@ export const createPost = catchAsync(
   }
 );
 
-export const getPost = catchAsync(
+export const getPost = (req: Request, res: Response, next: NextFunction) => {
+  getOne(req, res, next, Post);
+};
+
+export const deletePostPicture = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const postId = req.params.id;
+    const post: IPost = await Post.findById(req.params.id);
 
-    const post = await Post.findById(postId);
+    if (`${post.createdBy._id}` !== `${req.user!._id}`) {
+      return next(
+        new AppError(`you are not authorized to delete this post`, 401)
+      );
+    }
 
-    res.status(200).json({
-      message: "success",
-      post,
-    });
+    try {
+      if (post.photos.length) {
+        const deletePhotos = post.photos.map((photo) => {
+          cloudinary.v2.uploader.destroy(photo.cloudId);
+        });
+        await Promise.all(deletePhotos);
+      }
+
+      return next();
+    } catch (e) {
+      return next(new AppError("error deleting post", 500));
+    }
   }
 );
+
+export const deletePost = (req: Request, res: Response, next: NextFunction) => {
+  deleteOne(req, res, next, Post);
+};

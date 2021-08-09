@@ -3,6 +3,8 @@ import {
   createPost,
   handlePostPictures,
   getPost,
+  deletePostPicture,
+  deletePost,
 } from "./../controllers/post.controller";
 import { protectRoute } from "./../controllers/authController";
 import express from "express";
@@ -13,6 +15,9 @@ router
   .route("/")
   .post(protectRoute, uploadPostPictures, handlePostPictures, createPost);
 
-router.route("/:id").get(protectRoute, getPost);
+router
+  .route("/:id")
+  .get(protectRoute, getPost)
+  .delete(protectRoute, deletePostPicture, deletePost);
 
 export default router;
