@@ -8,7 +8,7 @@ export const getOne = catchAsyncFactoryFn(
 
     const doc = await Model.findById(id);
 
-    if (!doc) return next(new AppError("organization not found", 400));
+    if (!doc) return next(new AppError("document not found", 400));
 
     res.status(200).json({
       status: "success",
@@ -25,10 +25,12 @@ export const createOne = catchAsyncFactoryFn(
     Model: any,
     validateInput: any
   ) => {
-    const { error } = validateInput(req.body);
+    if (validateInput) {
+      const { error } = validateInput(req.body);
 
-    if (error) {
-      return next(new AppError(`${error.message}`, 400));
+      if (error) {
+        return next(new AppError(`${error.message}`, 400));
+      }
     }
     const doc = await Model.create(req.body);
 

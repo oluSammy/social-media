@@ -1,5 +1,6 @@
-import { IPost } from "./../types/types";
 import mongoose from "mongoose";
+import { IPost } from "./../types/types";
+import Likes from "./Likes.model";
 
 const postSchema = new mongoose.Schema<IPost>(
   {
@@ -20,6 +21,8 @@ const postSchema = new mongoose.Schema<IPost>(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
@@ -27,12 +30,29 @@ function arrayLimit(val: any) {
   return val.length <= 3;
 }
 
+postSchema.virtual("numberOfLikes", {
+  ref: "Likes",
+  localField: "_id",
+  foreignField: "postId",
+  justOne: false,
+  count: true,
+});
+
+postSchema.virtual("numberOfComments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "postId",
+  justOne: false,
+  count: true,
+});
+
 postSchema.pre(/^find/, function (next) {
   this.populate({
     path: "createdBy",
-    select:
-      "firstName lastName username bio followers following profilePic",
-  });
+    select: "firstName lastName username bio followers following profilePic",
+  })
+    .populate("numberOfLikes")
+    .populate("numberOfComments");
 
   next();
 });
