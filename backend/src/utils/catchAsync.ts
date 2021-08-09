@@ -8,7 +8,7 @@ const catchAsyncFactoryFn = (fn: any) => {
     model?: any,
     validateFn?: any
   ) => {
-    fn(req, res, next).catch(next);
+    fn(req, res, next, model, validateFn).catch(next);
   };
 };
 

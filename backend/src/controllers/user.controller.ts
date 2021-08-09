@@ -114,7 +114,6 @@ export const updateMe = catchAsync(
         }
 
         if (req.user?.coverPhotoCloudinaryId) {
-          console.log(" GOT HERE");
           await cloudinary.v2.uploader.destroy(
             req.user?.coverPhotoCloudinaryId
           );
