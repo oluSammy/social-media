@@ -3,9 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import Post from "../models/post.model";
 import { catchAsync } from "./../utils/catchAsync";
 import cloudinary from "cloudinary";
-import { deleteOne, getOne } from "./factoryFunctions";
+import { deleteOne, getAll, getOne } from "./factoryFunctions";
 import AppError from "../utils/AppError";
 import Likes from "../models/Likes.model";
+import Comment from "../models/comments.model";
 
 interface MulterRequest extends Request {
   files?: any;
@@ -52,6 +53,10 @@ export const getPost = (req: Request, res: Response, next: NextFunction) => {
   getOne(req, res, next, Post);
 };
 
+export const getPosts = (req: Request, res: Response, next: NextFunction) => {
+  getAll(req, res, next, Post);
+};
+
 export const deletePostPicture = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const post: IPost = await Post.findById(req.params.id);
@@ -77,16 +82,14 @@ export const deletePostPicture = catchAsync(
   }
 );
 
-// TODO
 export const deleteLikesAndComments = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await Likes.deleteMany({ postId: req.params.id });
-
+    await Comment.deleteMany({ postId: req.params.id });
     next();
   }
 );
 
 export const deletePost = (req: Request, res: Response, next: NextFunction) => {
-  // delete likes and comments
   deleteOne(req, res, next, Post);
 };

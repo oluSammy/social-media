@@ -1,4 +1,5 @@
 import { Response, Request, NextFunction } from "express";
+import ApiFeatures from "../utils/ApiFeatures";
 import AppError from "../utils/AppError";
 import catchAsyncFactoryFn from "../utils/catchAsync";
 
@@ -84,33 +85,19 @@ export const deleteOne = catchAsyncFactoryFn(
 
 export const getAll = catchAsyncFactoryFn(
   async (req: Request, res: Response, next: NextFunction, Model: any) => {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
+    // build query
+    const features = new ApiFeatures(Model.find(), req.query)
+      .filter()
+      .sort()
+      .limit()
+      .paginate();
 
-    const totalCount = await Model.countDocuments();
+    // execute query
+    const doc = await features.query;
 
-    const prevPage = page === 1 ? null : page - 1;
-    const nextPage = page * limit >= totalCount ? null : page + 1;
-
-    const docs = await Model.find()
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    /**
-     * 20 docs t0tal
-     * limit 5
-     * page 1
-     * 1 - 5 skip(0).limit(5)
-     * page 2
-     * 6 - 10 skip(5).limit(5)
-     */
-
-    res.status(200).json({
-      status: "success",
-      results: docs.length,
-      previous: prevPage,
-      next: nextPage,
-      data: docs,
-    });
+    // send response
+    res
+      .status(200)
+      .json({ message: "success", results: doc.length, data: doc });
   }
 );
