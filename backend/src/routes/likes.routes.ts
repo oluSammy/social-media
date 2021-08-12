@@ -4,6 +4,6 @@ import express from "express";
 
 const router = express.Router();
 
-router.post("/:id", protectRoute, likePost);
+router.post("/:id", likePost);
 
 export default router;

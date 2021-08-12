@@ -101,3 +101,9 @@ export const getAll = catchAsyncFactoryFn(
       .json({ message: "success", results: doc.length, data: doc });
   }
 );
+
+export const searchDocs = catchAsyncFactoryFn(
+  async (req: Request, res: Response, next: NextFunction, Model: any) => {
+  // const searchResult o
+  }
+);
