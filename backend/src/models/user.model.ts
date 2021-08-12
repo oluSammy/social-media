@@ -71,6 +71,9 @@ const userSchema = new mongoose.Schema<IUser>(
   }
 );
 
+// creating index for search
+userSchema.index({ username: "text", lastName: "text", firstName: "text" });
+
 //pre save middleware to hash password
 userSchema.pre("save", async function (next) {
   if (!this.isModified) return next();

@@ -15,12 +15,12 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(protectRoute, uploadPostPictures, handlePostPictures, createPost)
-  .get(protectRoute, getPosts);
+  .post(uploadPostPictures, handlePostPictures, createPost)
+  .get(getPosts);
 
 router
   .route("/:id")
-  .get(protectRoute, getPost)
-  .delete(protectRoute, deletePostPicture, deleteLikesAndComments, deletePost);
+  .get(getPost)
+  .delete(deletePostPicture, deleteLikesAndComments, deletePost);
 
 export default router;

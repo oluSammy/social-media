@@ -30,6 +30,9 @@ function arrayLimit(val: any) {
   return val.length <= 3;
 }
 
+// creating index for search
+postSchema.index({ text: "text" });
+
 postSchema.virtual("numberOfLikes", {
   ref: "Likes",
   localField: "_id",

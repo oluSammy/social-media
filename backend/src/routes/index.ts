@@ -4,13 +4,16 @@ import usersRouter from "../routes/user.routes";
 import postRouter from "../routes/post.routes";
 import likesRouter from "../routes/likes.routes";
 import socialAuthRoutes from "../routes/socialLoginAuth.routes";
+import searchRoutes from "./search.route";
+import { protectRoute } from "../controllers/authController";
 
 const router = express.Router();
 
 router.use("/users", usersRouter);
-router.use("/comments", commentRoute);
-router.use("/post", postRouter);
-router.use("/likes", likesRouter);
+router.use("/comments", protectRoute, commentRoute);
+router.use("/post", protectRoute, postRouter);
+router.use("/likes", protectRoute, likesRouter);
+router.use("/search", protectRoute, searchRoutes);
 
 // router.su
 
