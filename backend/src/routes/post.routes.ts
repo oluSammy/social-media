@@ -7,11 +7,14 @@ import {
   deletePost,
   deleteLikesAndComments,
   getPosts,
+  getTimelinePosts,
 } from "./../controllers/post.controller";
 import { protectRoute } from "./../controllers/authController";
 import express from "express";
 
 const router = express.Router();
+
+router.route("/timeline").get(getTimelinePosts);
 
 router
   .route("/")

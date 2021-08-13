@@ -7,6 +7,8 @@ import { deleteOne, getAll, getOne } from "./factoryFunctions";
 import AppError from "../utils/AppError";
 import Likes from "../models/Likes.model";
 import Comment from "../models/comments.model";
+import Following from "../models/following.model";
+import ApiFeatures from "../utils/ApiFeatures";
 
 interface MulterRequest extends Request {
   files?: any;
@@ -45,6 +47,27 @@ export const createPost = catchAsync(
 
     res.status(201).json({
       post: newPost,
+    });
+  }
+);
+
+export const getTimelinePosts = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userFollowings = await Following.findOne({ userId: req.user?._id });
+
+    const timelineQuery = new ApiFeatures(
+      Post.find({ createdBy: { $in: userFollowings.followings } }),
+      req.query
+    )
+      .limit()
+      .sort()
+      .paginate();
+
+    const timelinePosts = await timelineQuery.query;
+
+    return res.status(200).json({
+      message: "success",
+      posts: timelinePosts,
     });
   }
 );
