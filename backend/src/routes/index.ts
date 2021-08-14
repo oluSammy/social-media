@@ -15,7 +15,7 @@ router.use("/post", protectRoute, postRouter);
 router.use("/likes", protectRoute, likesRouter);
 router.use("/search", protectRoute, searchRoutes);
 
-// router.su
+// get user posts
 
 router.use("/auth", socialAuthRoutes);
 // router.get("/follow", followUser);

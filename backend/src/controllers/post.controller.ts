@@ -107,12 +107,37 @@ export const deletePostPicture = catchAsync(
 
 export const deleteLikesAndComments = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const post = await Post.findById(req.params.id);
+
+    if (`${post.createdBy._id}` !== `${req.user?._id}`) {
+      return next(
+        new AppError("you do not have permission to delete this post", 401)
+      );
+    }
+
     await Likes.deleteMany({ postId: req.params.id });
     await Comment.deleteMany({ postId: req.params.id });
     next();
   }
 );
 
+// only creator can delete
 export const deletePost = (req: Request, res: Response, next: NextFunction) => {
   deleteOne(req, res, next, Post);
 };
+
+export const getUserPost = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postQuery = new ApiFeatures(
+      Post.find({ createdBy: req.params.id }),
+      req.query
+    )
+      .limit()
+      .sort()
+      .paginate();
+
+    const posts = await postQuery.query;
+
+    return res.status(200).json({ message: "success", posts });
+  }
+);
