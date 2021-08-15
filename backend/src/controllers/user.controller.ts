@@ -151,7 +151,7 @@ export const updateMe = catchAsync(
     });
 
     res.json({
-      message: "profile update successful",
+      message: "profile update success",
       user: newUser,
     });
   }

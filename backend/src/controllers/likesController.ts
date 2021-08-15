@@ -18,6 +18,7 @@ export const likePost = catchAsync(
     if (liked) {
       await Likes.deleteOne({ likedBy: req.user!._id, postId: req.params.id });
       return res.status(201).json({
+        status: "success",
         message: "post un-liked",
       });
     }
@@ -28,8 +29,8 @@ export const likePost = catchAsync(
     });
 
     res.status(201).json({
-      message: "post liked successfully",
+      status: "success",
+      message: "post liked",
     });
   }
 );
-
