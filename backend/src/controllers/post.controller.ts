@@ -46,6 +46,7 @@ export const createPost = catchAsync(
     const newPost = await Post.create(post);
 
     res.status(201).json({
+      status: "success",
       post: newPost,
     });
   }
@@ -66,7 +67,7 @@ export const getTimelinePosts = catchAsync(
     const timelinePosts = await timelineQuery.query;
 
     return res.status(200).json({
-      message: "success",
+      status: "success",
       posts: timelinePosts,
     });
   }
@@ -138,6 +139,6 @@ export const getUserPost = catchAsync(
 
     const posts = await postQuery.query;
 
-    return res.status(200).json({ message: "success", posts });
+    return res.status(200).json({ status: "success", posts });
   }
 );

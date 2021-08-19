@@ -150,9 +150,6 @@ export const updateMe = catchAsync(
       runValidators: true,
     });
 
-    res.json({
-      message: "profile update successful",
-      user: newUser,
-    });
+    res.status(200).json({ message: "profile update success", user: newUser });
   }
 );

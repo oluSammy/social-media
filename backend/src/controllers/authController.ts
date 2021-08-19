@@ -27,8 +27,10 @@ const generateToken = (id: string): string => {
 const sendToken = (res: Response, statusCode: number, user: IUser) => {
   const token = generateToken(user._id as string);
 
+  const expires = new Date(Date.now() + 20 * 24 * 60 * 1000);
+
   const cookieOptions: CookieOptions = {
-    expires: new Date(Date.now() + 20 * 24 * 60 * 1000),
+    expires,
   };
 
   if (process.env.NODE_ENV === "production") {
@@ -39,9 +41,12 @@ const sendToken = (res: Response, statusCode: number, user: IUser) => {
   user.password = undefined;
 
   return res.status(statusCode).json({
-    status: "successful",
+    status: "success",
     user,
-    token,
+    token: {
+      token,
+      expires,
+    },
   });
 };
 
@@ -252,7 +257,7 @@ export const forgotPassword = catchAsync(
       });
 
       return res.status(200).json({
-        status: "successful",
+        status: "success",
         message: "password reset token has been sent to your email",
       });
     } catch (e) {

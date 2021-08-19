@@ -8,8 +8,12 @@ import indexRouter from "./routes/index";
 import session from "express-session";
 import passport from "passport";
 import dotenv from "dotenv";
+import { testDbConnect } from "./database/testDbConnect";
+import { connectDB } from "./database/dbConnect";
 
 dotenv.config();
+
+process.env.NODE_ENV === "test" ? testDbConnect() : connectDB();
 
 const app = express();
 
