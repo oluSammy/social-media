@@ -1,5 +1,5 @@
 export interface IUser {
-  _id?: string;
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -44,4 +44,8 @@ export interface IComment {
   text: string;
   postId: string;
   createdBy: IUser;
+}
+
+export interface socketUser extends IUser {
+  socketId: string;
 }
