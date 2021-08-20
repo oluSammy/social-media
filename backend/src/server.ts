@@ -1,12 +1,23 @@
-// import { testDbConnect } from "./database/testDbConnect";
-// import { connectDB } from "./database/dbConnect";
 import app from "./app";
 import dotenv from "dotenv";
 import { HttpError } from "http-errors";
+import http from "http";
+import { Server, Socket } from "socket.io";
+
+const httpServer = http.createServer(app);
 
 dotenv.config();
 
-// process.env.NODE_ENV === "test" ? testDbConnect() : connectDB();
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket: Socket) => {
+  // ...
+});
 
 process.on("unhandledRejection", (err: HttpError) => {
   console.log("Unhandled Rejection, shutting down");
@@ -15,7 +26,7 @@ process.on("unhandledRejection", (err: HttpError) => {
 
 const port = (process.env.PORT as number | undefined) || 5000;
 
-const server = app.listen(port, () => {
+const server = httpServer.listen(port, () => {
   console.log(`server running on port 5000 http://127.0.0.1:${port}`);
 });
 

@@ -102,10 +102,7 @@ describe("update password", () => {
       .send(updatePassword)
       .set("Authorization", `Bearer ${token}`);
 
-      console.log(response.body);
-
     // expect(response.body.status).toBe("success");
     expect(response.status).toBe(200);
   });
 });
-
