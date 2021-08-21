@@ -23,6 +23,16 @@ export const io = new Server(httpServer, {
   },
 });
 
+io.use((socket, next) => {
+  if (true) {
+    console.log("SOCKET DETAILS");
+    console.log(socket.request);
+    next();
+  } else {
+    next(new Error("invalid"));
+  }
+});
+
 io.on("connection", (socket: Socket) => {
   console.log("A User Connected, Congrats");
 
@@ -55,7 +65,6 @@ io.on("connection", (socket: Socket) => {
   socket.on("disconnect", async () => {
     // remove user from online users
     const user = logOut(socket.id);
-
 
     // get users following the newly logged in user from DB
     const userFollowers = await Follower.findOne({ userId: user._id });

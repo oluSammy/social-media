@@ -42,6 +42,8 @@ const userTwo = {
 
 function App() {
   const [user, setUser] = useState<any>(null);
+  const [message, setMessag] = useState<any>(null);
+  const [messagees, setMessages] = useState<any>(null);
 
   useEffect(() => {
     socket.emit("test", "BIDÊN 2023");
@@ -97,8 +99,12 @@ function App() {
       >
         Set as user two
       </button>
-      <h1>Hello </h1>
-      {/* Social media */}
+      <input type="text" name="msg" id="msg" />
+      <button>Send</button>
+
+      <div>
+        <h1>Message Box</h1>
+      </div>
     </div>
   );
 }
