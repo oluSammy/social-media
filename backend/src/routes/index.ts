@@ -5,6 +5,7 @@ import postRouter from "../routes/post.routes";
 import likesRouter from "../routes/likes.routes";
 import socialAuthRoutes from "../routes/socialLoginAuth.routes";
 import searchRoutes from "./search.route";
+import chatRoutes from "./chat.routes";
 import { protectRoute } from "../controllers/authController";
 
 const router = express.Router();
@@ -14,6 +15,7 @@ router.use("/comments", protectRoute, commentRoute);
 router.use("/post", protectRoute, postRouter);
 router.use("/likes", protectRoute, likesRouter);
 router.use("/search", protectRoute, searchRoutes);
+router.use("/chats", protectRoute, chatRoutes);
 
 // get user posts
 

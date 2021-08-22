@@ -49,3 +49,11 @@ export interface IComment {
 export interface socketUser extends IUser {
   socketId: string;
 }
+
+export interface IMessage {
+  _id: string;
+  users: string[];
+  senderId: string;
+  images: string[];
+  message: string;
+}
