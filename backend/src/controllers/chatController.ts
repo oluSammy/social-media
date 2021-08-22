@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Chat from "../models/chat.model";
 import ApiFeatures from "../utils/ApiFeatures";
 import AppError from "../utils/AppError";
-import { catchAsync } from "./../utils/catchAsync";
+import { catchAsync } from "../utils/catchAsync";
 
 export const sendChatMessage = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ export const getChatMessages = catchAsync(
 
     const messages = await messagesQuery.query;
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       noOfMessages: messages.length,
       messages,
