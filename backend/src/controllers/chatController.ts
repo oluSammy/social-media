@@ -10,7 +10,7 @@ export const sendChatMessage = catchAsync(
     const receiver = req.params.id;
 
     if (!receiver) {
-      next(new AppError("receiver Id is required", 400));
+      return next(new AppError("receiver Id is required", 400));
     }
 
     const chat = await Chat.create({
@@ -44,6 +44,33 @@ export const getChatMessages = catchAsync(
       status: "success",
       noOfMessages: messages.length,
       messages,
+    });
+  }
+);
+
+export const updateChatMessageStatus = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // user can only update status
+    if (
+      req.body.text ||
+      req.body.users ||
+      req.body.senderId ||
+      req.body.images
+    ) {
+      return next(
+        new AppError("text, users, senderId or images cannot be updated", 400)
+      );
+    }
+
+    // update messageStatus
+    const updatedChat = await Chat.findByIdAndUpdate(req.params.id, req.body, {
+      runValidators: true,
+      new: true,
+    });
+
+    res.status(201).json({
+      status: "success",
+      updatedChat,
     });
   }
 );

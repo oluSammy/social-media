@@ -26,6 +26,8 @@ const chatSchema = new mongoose.Schema<IMessage>(
       maxLength: [3000, "comment cannot be more than 3000 characters"],
       minLength: [1, "comment must be at least 1 character"],
     },
+    read: Boolean,
+    delivered: Boolean,
   },
   {
     timestamps: true,

@@ -25,6 +25,7 @@ let user1Token = "";
 let user1Id = "";
 let user2Token = "";
 let user2Id = "";
+let chatMessageId = "";
 
 afterAll(async () => {
   await dbDisconnect();
@@ -56,6 +57,8 @@ describe("create chat message", () => {
       .post(`${url}/chats/${user2Id}`)
       .send(chat)
       .set("Authorization", `Bearer ${user1Token}`);
+
+    chatMessageId = response.body.chat._id;
 
     expect(response.status).toBe(201);
     expect(response.body.status).toBe("success");
@@ -90,6 +93,20 @@ describe("Get Chat Messages", () => {
       .set("Authorization", `Bearer ${user2Token}`);
 
     expect(response.status).toBe(200);
+    expect(response.body.status).toBe("success");
+  });
+});
+
+describe("update chat message status", () => {
+  it("should update chat message status", async () => {
+    const response = await supertest(app)
+      .put(`${url}/chats/${chatMessageId}`)
+      .send({ read: true, delivered: true })
+      .set("Authorization", `Bearer ${user1Token}`);
+
+    console.log(response.body);
+
+    expect(response.status).toBe(201);
     expect(response.body.status).toBe("success");
   });
 });

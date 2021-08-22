@@ -10,7 +10,11 @@ import {
   forgotPassword,
   resetPassword,
 } from "../controllers/authController";
-import { updateMe } from "../controllers/user.controller";
+import {
+  updateMe,
+  getUserFollowers,
+  getUserFollowings,
+} from "../controllers/user.controller";
 
 const router = express.Router();
 
@@ -21,6 +25,8 @@ router.post("/forgotPassword", forgotPassword);
 router.post("/resetPassword/:token", resetPassword);
 
 router.post("/follow/:id", protectRoute, followUser);
+router.get("/followers/:id", protectRoute, getUserFollowers);
+router.get("/followings/:id", protectRoute, getUserFollowings);
 
 router.patch("/updateMe", protectRoute, uploadUserPic, updateMe);
 

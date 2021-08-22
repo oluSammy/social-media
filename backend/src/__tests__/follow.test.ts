@@ -80,3 +80,27 @@ describe("Follow a user", () => {
     expect(response.body.user.followings.numberOfFollowings).toBe(1);
   });
 });
+
+describe("Get Followers", () => {
+  it("should get user followers", async () => {
+    const response = await supertest(app)
+      .get(`${url}/users/followers/${secondUserId}`)
+      .set("Authorization", `Bearer ${secondUserToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe("success");
+    expect(response.body.noOfResult).toBe(1);
+  });
+});
+
+describe("Get Followings", () => {
+  it("should get user followers", async () => {
+    const response = await supertest(app)
+      .get(`${url}/users/followings/${firstUserId}`)
+      .set("Authorization", `Bearer ${firstUserToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe("success");
+    expect(response.body.noOfResult).toBe(1);
+  });
+});

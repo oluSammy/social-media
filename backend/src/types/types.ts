@@ -56,4 +56,6 @@ export interface IMessage {
   senderId: string;
   images: string[];
   message: string;
+  read: boolean;
+  delivered: boolean;
 }

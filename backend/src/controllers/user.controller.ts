@@ -6,6 +6,7 @@ import Follower from "../models/follower.model";
 import Following from "../models/following.model";
 import cloudinary from "cloudinary";
 import User from "../models/user.model";
+import ApiFeatures from "../utils/ApiFeatures";
 
 interface MulterRequest extends Request {
   files?: any;
@@ -151,5 +152,51 @@ export const updateMe = catchAsync(
     });
 
     res.status(200).json({ message: "profile update success", user: newUser });
+  }
+);
+
+export const getUserFollowers = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // get all user followers
+    const userFollowers = await Follower.findOne({ userId: req.params.id });
+
+    const myFollowersQuery = new ApiFeatures(
+      User.find({ _id: { $in: userFollowers.followers } }),
+      req.query
+    )
+      .limit()
+      .sort()
+      .paginate();
+
+    const followers = await myFollowersQuery.query;
+
+    res.status(200).json({
+      status: "success",
+      noOfResult: followers.length,
+      followers,
+    });
+  }
+);
+
+export const getUserFollowings = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // get all user followers
+    const userFollowings = await Following.findOne({ userId: req.params.id });
+
+    const myFollowingsQuery = new ApiFeatures(
+      User.find({ _id: { $in: userFollowings.followings } }),
+      req.query
+    )
+      .limit()
+      .sort()
+      .paginate();
+
+    const followings = await myFollowingsQuery.query;
+
+    res.status(200).json({
+      status: "success",
+      noOfResult: followings.length,
+      followings,
+    });
   }
 );
