@@ -2,8 +2,15 @@ import {
   addToLoggedIn,
   logOut,
   getFriends,
+  getUserById,
+  getUserBySocketId,
 } from "./controllers/socketController";
-import { IUser } from "./types/types";
+import {
+  ISendMessageArg,
+  IUser,
+  ITyping,
+  IMessageDeliveredArg,
+} from "./types/types";
 import app from "./app";
 import dotenv from "dotenv";
 import { HttpError } from "http-errors";
@@ -11,6 +18,7 @@ import http from "http";
 import { Server, Socket } from "socket.io";
 import Following from "./models/following.model";
 import Follower from "./models/follower.model";
+import Chat from "./models/chat.model";
 
 const httpServer = http.createServer(app);
 
@@ -23,10 +31,11 @@ export const io = new Server(httpServer, {
   },
 });
 
+// socket auth middleware
 io.use((socket, next) => {
   if (true) {
     console.log("SOCKET DETAILS");
-    console.log(socket.request);
+    // console.log(socket.request);
     next();
   } else {
     next(new Error("invalid"));
@@ -43,7 +52,7 @@ io.on("connection", (socket: Socket) => {
     // get users following the newly logged in user from DB
     const userFollowers = await Follower.findOne({ userId: user._id });
 
-    // // get users following the newly logged in user from online logged in user
+    // get users following the newly logged in user from online logged in user
     const friends = getFriends(userFollowers.followers);
 
     // notify the followers of the logged in user that a friend just logged in
@@ -60,6 +69,65 @@ io.on("connection", (socket: Socket) => {
     const friends = getFriends(userFollowings.followings);
 
     io.to(socket.id).emit("online-friends", friends);
+  });
+
+  // typing message listener
+  socket.on("typing-chat", ({ recipient }: ITyping, cb) => {
+    const sender = getUserBySocketId(socket.id);
+
+    const messageRecipient = getUserById(recipient._id);
+
+    if (messageRecipient) {
+      io.to(messageRecipient?.socketId).emit("friend-typing", sender);
+    }
+  });
+
+  // send message listener
+  socket.on(
+    "send-chat",
+    async ({ recipient, message }: ISendMessageArg, cb) => {
+      const sender = getUserBySocketId(socket.id);
+
+      try {
+        const newChat = await Chat.create({
+          users: [sender._id, recipient._id],
+          senderId: sender._id,
+          text: message,
+        });
+
+        io.to(recipient?.socketId).emit("message-sent", {
+          chat: newChat,
+          sender,
+        });
+
+        cb();
+      } catch (e) {
+        cb(e);
+      }
+    }
+  );
+
+  // message delivered listener
+  socket.on(
+    "message-delivered",
+    ({ sentBy, message }: IMessageDeliveredArg) => {
+      const receivedBy = getUserBySocketId(socket.id);
+
+      io.to(receivedBy?.socketId).emit("chat-delivered", {
+        sentBy,
+        message,
+      });
+    }
+  );
+
+  // message read listener
+  socket.on("message-read", ({ sentBy, message }: IMessageDeliveredArg) => {
+    const receivedBy = getUserBySocketId(socket.id);
+
+    io.to(receivedBy?.socketId).emit("chat-read", {
+      sentBy,
+      message,
+    });
   });
 
   socket.on("disconnect", async () => {

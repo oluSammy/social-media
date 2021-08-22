@@ -59,3 +59,16 @@ export interface IMessage {
   read: boolean;
   delivered: boolean;
 }
+
+export interface ITyping {
+  recipient: socketUser;
+}
+
+export interface ISendMessageArg extends ITyping {
+  message: string;
+}
+
+export interface IMessageDeliveredArg {
+  message: IMessage;
+  sentBy: socketUser;
+}

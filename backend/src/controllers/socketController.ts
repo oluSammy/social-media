@@ -28,7 +28,17 @@ export const getFriends = (userIds: string[]) => {
   return friends;
 };
 
-// export const getOnlineFriends = (ids: []) => {};
+export const getUserById = (id: string) => {
+  for (const key in loggedInUsers) {
+    if (loggedInUsers[key]._id === id) {
+      return loggedInUsers[key];
+    }
+  }
+};
+
+export const getUserBySocketId = (id: string) => {
+  return loggedInUsers[id];
+};
 
 export const getAllUsers = () => {
   return loggedInUsers;
