@@ -49,3 +49,26 @@ export interface IComment {
 export interface socketUser extends IUser {
   socketId: string;
 }
+
+export interface IMessage {
+  _id: string;
+  users: string[];
+  senderId: string;
+  images: string[];
+  message: string;
+  read: boolean;
+  delivered: boolean;
+}
+
+export interface ITyping {
+  recipient: socketUser;
+}
+
+export interface ISendMessageArg extends ITyping {
+  message: string;
+}
+
+export interface IMessageDeliveredArg {
+  message: IMessage;
+  sentBy: socketUser;
+}

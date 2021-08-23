@@ -3,7 +3,9 @@ import { IUser, socketUser } from "./../types/types";
 let loggedInUsers: Record<string, socketUser> = {};
 
 export const addToLoggedIn = (socketId: string, user: IUser) => {
-  const newUser = { ...user, socketId };
+  const loggedInUser = user
+  // console.log(user);
+  const newUser = { ...loggedInUser, socketId };
 
   loggedInUsers[socketId] = newUser;
 };
@@ -28,7 +30,17 @@ export const getFriends = (userIds: string[]) => {
   return friends;
 };
 
-// export const getOnlineFriends = (ids: []) => {};
+export const getUserById = (id: string) => {
+  for (const key in loggedInUsers) {
+    if (loggedInUsers[key]._id === id) {
+      return loggedInUsers[key];
+    }
+  }
+};
+
+export const getUserBySocketId = (id: string) => {
+  return loggedInUsers[id];
+};
 
 export const getAllUsers = () => {
   return loggedInUsers;
