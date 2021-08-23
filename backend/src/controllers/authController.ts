@@ -175,6 +175,10 @@ export const protectRoute = catchAsync(
 
     const user = await User.findById(decodedToken.id);
 
+    if (!user) {
+      return next(new AppError("user no longer exist", 404));
+    }
+
     req.user = user;
 
     next();

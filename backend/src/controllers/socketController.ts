@@ -3,7 +3,9 @@ import { IUser, socketUser } from "./../types/types";
 let loggedInUsers: Record<string, socketUser> = {};
 
 export const addToLoggedIn = (socketId: string, user: IUser) => {
-  const newUser = { ...user, socketId };
+  const loggedInUser = user
+  // console.log(user);
+  const newUser = { ...loggedInUser, socketId };
 
   loggedInUsers[socketId] = newUser;
 };

@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import io from "socket.io-client";
 
-export const socket = io("http://127.0.0.1:5000");
+export const socket = io("http://127.0.0.1:5000", {
+  auth: {
+    token:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMTA3ZTgyNDNiNGQzN2JjNjgyZTc3OCIsImlhdCI6MTYyOTU5OTg1OSwiZXhwIjoxNjMxMzI3ODU5fQ.BHMiFkC_UxjSHjM4ZZO9Djx-iLy4BbJJ-Wiccil_wg",
+  },
+});
 
 const userOne = {
   provider: "local",
@@ -67,6 +72,12 @@ function App() {
     socket.on("new-logout", (loggedOutUser) => {
       console.log("somebody logged out");
       console.log(loggedOutUser);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("connect_error", (err) => {
+      console.log(err.message); // prints the message associated with the error
     });
   }, []);
 

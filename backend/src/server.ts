@@ -5,12 +5,7 @@ import {
   getUserById,
   getUserBySocketId,
 } from "./controllers/socketController";
-import {
-  ISendMessageArg,
-  IUser,
-  ITyping,
-  IMessageDeliveredArg,
-} from "./types/types";
+import { ISendMessageArg, ITyping, IMessageDeliveredArg } from "./types/types";
 import app from "./app";
 import dotenv from "dotenv";
 import { HttpError } from "http-errors";
@@ -18,7 +13,9 @@ import http from "http";
 import { Server, Socket } from "socket.io";
 import Following from "./models/following.model";
 import Follower from "./models/follower.model";
+import User from "./models/user.model";
 import Chat from "./models/chat.model";
+import jwt from "jsonwebtoken";
 
 const httpServer = http.createServer(app);
 
@@ -32,34 +29,47 @@ export const io = new Server(httpServer, {
 });
 
 // socket auth middleware
-io.use((socket, next) => {
-  if (true) {
-    console.log("SOCKET DETAILS");
-    // console.log(socket.request);
-    next();
-  } else {
-    next(new Error("invalid"));
+io.use(async (socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  try {
+    const decodedToken: any = jwt.verify(
+      token as string,
+      process.env.JWT_SECRET as string
+    );
+
+    if (decodedToken) {
+      const user = await User.findById(decodedToken.id);
+
+      if (!user) {
+        return next(new Error("user no longer exist"));
+      }
+
+      // add to online logged in users
+      addToLoggedIn(socket.id, user._doc);
+
+      // get users following the newly logged in user from DB
+      const userFollowers = await Follower.findOne({ userId: user._id });
+
+      // get users following the newly logged in user from online logged in user
+      const friends = getFriends(userFollowers.followers);
+
+      // notify the followers of the logged in user that a friend just logged in
+      friends.forEach((friend) => {
+        io.to(friend.socketId).emit("new-login", user);
+      });
+
+      next();
+    } else {
+      return next(new Error("invalid login credentials"));
+    }
+  } catch (e) {
+    return next(new Error("invalid login credentials"));
   }
 });
 
 io.on("connection", (socket: Socket) => {
   console.log("A User Connected, Congrats");
-
-  socket.on("login", async (user: IUser) => {
-    // add to online logged in users
-    addToLoggedIn(socket.id, user);
-
-    // get users following the newly logged in user from DB
-    const userFollowers = await Follower.findOne({ userId: user._id });
-
-    // get users following the newly logged in user from online logged in user
-    const friends = getFriends(userFollowers.followers);
-
-    // notify the followers of the logged in user that a friend just logged in
-    friends.forEach((friend) => {
-      io.to(friend.socketId).emit("new-login", user);
-    });
-  });
 
   socket.on("get-online-friends", async (userId: string) => {
     // get all users the new user follows
